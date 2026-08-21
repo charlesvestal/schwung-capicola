@@ -109,8 +109,8 @@ occurs in `render_block`, `set_param` or `on_midi`.
 
 ## Controls
 
-Twelve parameters over two knob pages. Ranges and tapers are lifted from upstream
-so the feel is the tested one.
+Twenty-four parameters over three knob pages. Ranges and tapers are lifted from
+upstream so the feel is the tested one.
 
 Where the engineering unit reads well it is exposed directly. Where upstream's
 taper is load-bearing and the raw unit is meaningless on a 128×64 screen, the
@@ -142,6 +142,46 @@ real value — same feel, readable screen.
 Upstream expresses fade in samples (480…12000 @ 48 kHz). We expose **ms**, which
 is both readable and sample-rate independent, converting at the boundary.
 
+### Modulation page
+
+Upstream's 6×6 matrix: each primary knob gets a bipolar depth and a source
+selector. Twelve params do not fit eight knobs, so the depths take knobs 1–6 and
+the six selectors live as enum rows in the same level's `params` list, divable to
+the enum picker. One page, not two.
+
+| Knob | Key | Type | Range | Default |
+|---|---|---|---|---|
+| 1–6 | `mod_depth_<n>` | float | −1…+1 | 0 (off) |
+| — | `mod_src_<n>` | enum | `Input Env` / `Output Env` | `Output Env` |
+
+`<n>` is the primary key it modulates: `pitch`, `stretch`, `threshold`, `grain`,
+`quality`, `feedback`.
+
+Upstream's third source is the CV IN jack. Move has no such jack and needs none —
+the chain host's LFOs and modulation routing can already target these params from
+outside, which is the same capability by another route. Dropping it leaves two
+sources and no loss.
+
+Default source is the **output** follower, matching upstream: depth alone closes
+a loop through the module's own output envelope, which is what makes it
+self-modulating out of the box.
+
+**Modulation is applied in normalized space, before the taper** — `norm +
+source × depth`, clamped to 0…1, then through that param's range mapping. This is
+not incidental: applying it after the taper would make depth mean something
+different at each end of a `(1−x)^2.5` sweep. Consequence for the port: the six
+primary params are stored internally as norms and converted at the param
+boundary, even the two exposed in engineering units (`pitch` in semitones,
+`grain` in keyframes — both linear, so the inverse is trivial).
+
+Applied once per `render_block` (344 Hz at 128 frames / 44.1 kHz), which is
+ample for envelope-follower modulation.
+
+Known limitation: the Schwung knob grid shows the *base* value, so a modulated
+param's cell will not animate. The chain host's modulation marks track its own
+LFOs, not a module's internal matrix. Upstream has the same split — its ring
+shows knob position while the LED animates intensity separately.
+
 ### Mapping curves
 
 Ported verbatim from upstream `main.cpp`:
@@ -166,11 +206,11 @@ bypassing the threshold mute — upstream's B2.
 
 ### Dropped from upstream
 
-The 6×6 modulation matrix, CV in/out jacks, LED rings, QSPI preset store, and
-pot-catch. The matrix's function is partly covered by the chain host's existing
-LFOs and modulation routing — but not its best trick, self-modulation from the
-module's own output envelope. Revisit in v0.2 by exposing the two follower
-envelopes as modulation sources.
+CV in/out jacks, LED rings, QSPI preset store, and pot-catch — all hardware
+affordances with no Move equivalent.
+
+`ModRouter` lives in upstream's `main.cpp`, not in `lib/`, so it is not part of
+the verbatim lift and must be written fresh against the spec above.
 
 Chain state persistence uses Schwung's standard opaque `<prefix>:state` blob, so
 slot autosave and user presets work without upstream's QSPI layer.
@@ -211,18 +251,23 @@ target `./scripts/install.sh` against the device directly.
    and confirm plausible output before any cross-compile. Mirroring upstream's
    loop verbatim and validating on the host precedes any refactoring.
 2. **Pin the mapping table.** Unit-test norm → engineering value against the
-   curves above so a taper cannot silently drift from upstream.
-3. **Pin `sizeof(Keyframe) == 12`** under the cross-compiler, not just the host.
-4. **Cross-compile** ARM64 in Docker via `scripts/build.sh`.
-5. **On hardware:** load as an audio FX in a slot; verify transient re-anchor
-   locks to a drum loop; verify freeze at full stretch; verify slice-on-note.
+   curves above so a taper cannot silently drift from upstream. Include the
+   round trip for the two params exposed in engineering units (`pitch`,
+   `grain`), since the matrix depends on recovering their norms.
+3. **Pin that modulation is pre-taper.** Assert that a fixed depth on `stretch`
+   produces different engineering deltas at each end of the sweep — the
+   post-taper bug would show as a constant delta and is otherwise invisible.
+4. **Pin `sizeof(Keyframe) == 12`** under the cross-compiler, not just the host.
+5. **Cross-compile** ARM64 in Docker via `scripts/build.sh`.
+6. **On hardware:** load as an audio FX in a slot; verify transient re-anchor
+   locks to a drum loop; verify freeze at full stretch; verify slice-on-note;
+   verify the default Output Env routing self-modulates once a depth is raised.
    Feedback chaos zone tested **last and at low volume** — ask before running
    anything that makes noise.
 
 ## Out of scope
 
 - Catalog entry, release workflow, `release.json`, version tag
-- The modulation matrix and follower mod sources (v0.2)
 - CV/gate equivalents — Move has no such jacks
 - Upstream's offline record/playback states (`RECORDING`, `PLAYBACK`); only
   `LIVE_EFFECT` is driven
