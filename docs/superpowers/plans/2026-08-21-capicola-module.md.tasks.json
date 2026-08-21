@@ -11,7 +11,7 @@
     {
       "id": 1,
       "subject": "Task 1: Sample-rate patch + host build harness",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [
         0
       ],
@@ -20,7 +20,7 @@
     {
       "id": 2,
       "subject": "Task 2: Param mapping and modulation matrix",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [
         1
       ],
@@ -29,7 +29,7 @@
     {
       "id": 3,
       "subject": "Task 3: Engine port",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [
         1,
         2
@@ -39,7 +39,7 @@
     {
       "id": 4,
       "subject": "Task 4: Plugin wrapper",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [
         3
       ],
@@ -48,7 +48,7 @@
     {
       "id": 5,
       "subject": "Task 5: module.json + page-layout verification",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [
         4
       ],
@@ -57,7 +57,7 @@
     {
       "id": 6,
       "subject": "Task 6: Build scripts and cross-compile",
-      "status": "pending",
+      "status": "completed",
       "blockedBy": [
         4,
         5
@@ -67,7 +67,7 @@
     {
       "id": 7,
       "subject": "Task 7: Help content and documentation",
-      "status": "pending",
+      "status": "completed",
       "description": "**Goal:** On-device help and a README that credits upstream and states the known realtime violation plainly.\n\n**Files:**\n- Create: `src/help.json`\n- Modify: `README.md`\n\n**Acceptance Criteria:**\n- [ ] `help.json` valid JSON explaining all three pages\n- [ ] `help.json` credits upstream and the DAFx26 paper\n- [ ] README documents the `create_instance` allocation as a known RT violation\n- [ ] README documents the ring size and its memory cost\n- [ ] README carries a differences-from-upstream table\n\n**Verify:** `python3 -c \"import json;json.load(open('src/help.json'));print('OK')\"`\n\n**Steps:** help.json sections: what it does, each page, triggering, credit. Plain ASCII only \u2014 no smart quotes on a 128x64 OLED. README implementation notes: memory, the RT violation stated rather than hidden, upstream differences table.\n\n```json:metadata\n{\"files\": [\"src/help.json\", \"README.md\"], \"verifyCommand\": \"python3 -c \\\"import json;json.load(open('src/help.json'));print('OK')\\\"\", \"acceptanceCriteria\": [\"help.json is valid JSON covering all three pages\", \"help.json credits upstream and the paper\", \"README documents the create_instance RT violation\", \"README documents ring size and memory cost\", \"README has a differences-from-upstream table\"], \"modelTier\": \"mechanical\"}\n```"
     },
     {
