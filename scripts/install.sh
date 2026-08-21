@@ -8,7 +8,13 @@ REPO_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$REPO_ROOT"
 
 MOVE_HOST="${MOVE_HOST:-ableton@move.local}"
-DEST="/data/UserData/schwung/modules/audio_fxs/capicola"
+# NOT "audio_fxs". Schwung's docs describe the store extracting to
+# modules/<component_type>s/<id>/, but the directory on a real device is
+# modules/audio_fx/ (alongside midi_fx, tools, overtake — only
+# sound_generators is pluralised). Verified against the nine audio FX
+# installed on hardware. Get this wrong and the module is simply never
+# discovered, with no error anywhere.
+DEST="/data/UserData/schwung/modules/audio_fx/capicola"
 
 if [ ! -f "dist/capicola/capicola.so" ]; then
     echo "Error: dist/capicola/capicola.so not found. Run ./scripts/build.sh first."
