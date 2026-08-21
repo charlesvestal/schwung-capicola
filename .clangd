@@ -1,0 +1,21 @@
+# Editor-only include paths.
+#
+# The real build compiles against build/lib — the PATCHED copy that
+# scripts/apply_patches.sh produces — but build/ is gitignored and does not
+# exist until that script runs, so clangd reports every vendored header as
+# missing on a fresh checkout.
+#
+# Point the editor at the pristine src/dsp/lib instead. The only difference is
+# our one patch, which adds a defaulted parameter to KeyframeRecorder::Init —
+# invisible to name resolution, so indexing is accurate either way.
+#
+# This affects the editor only. It is not a build system and nothing reads it
+# at compile time.
+CompileFlags:
+  Add:
+    - -std=c++17
+    - -I../../src/dsp
+    - -I../../src/dsp/lib
+    - -Isrc/dsp
+    - -Isrc/dsp/lib
+    - -Wno-unused-parameter
