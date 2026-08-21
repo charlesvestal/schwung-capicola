@@ -15,7 +15,7 @@ build-tree copy by `scripts/build.sh`. `src/dsp/lib/` itself is never modified.
 
 To check drift:
 
-    diff -r src/dsp/lib /path/to/capicola/lib
+    diff -r src/dsp/lib /path/to/capicola/lib --exclude=alchemy-sdk
 
 ## Patches
 
