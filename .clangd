@@ -1,21 +1,25 @@
 # Editor-only include paths.
 #
 # The real build compiles against build/lib — the PATCHED copy that
-# scripts/apply_patches.sh produces — but build/ is gitignored and does not
-# exist until that script runs, so clangd reports every vendored header as
-# missing on a fresh checkout.
+# scripts/apply_patches.sh produces — so that directory must come FIRST here.
 #
-# Point the editor at the pristine src/dsp/lib instead. The only difference is
-# our one patch, which adds a defaulted parameter to KeyframeRecorder::Init —
-# invisible to name resolution, so indexing is accurate either way.
+# Pointing the editor at the pristine src/dsp/lib instead does NOT work: our
+# patch ADDS a defaulted parameter to KeyframeRecorder::Init, and an added
+# parameter is very much visible to name resolution. Against the pristine
+# header every two-argument Init call reads as "too many arguments".
 #
-# This affects the editor only. It is not a build system and nothing reads it
-# at compile time.
+# build/ is gitignored, so on a fresh checkout clangd will report the vendored
+# headers as missing until you run `scripts/apply_patches.sh` (or any
+# `make -C tests/host test`, which runs it as a prerequisite). That is the
+# right trade: transiently-missing headers are a clearer signal than
+# confidently-wrong arity errors.
+#
+# This affects the editor only. Nothing reads it at compile time.
 CompileFlags:
   Add:
     - -std=c++17
+    - -I../../build/lib
     - -I../../src/dsp
-    - -I../../src/dsp/lib
+    - -Ibuild/lib
     - -Isrc/dsp
-    - -Isrc/dsp/lib
     - -Wno-unused-parameter
