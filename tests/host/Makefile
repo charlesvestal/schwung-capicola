@@ -7,7 +7,7 @@ INC      := -I$(LIB) -I$(ROOT)/src/dsp
 
 BIN := $(ROOT)/build/tests
 
-TESTS := test_lib_smoke
+TESTS := test_lib_smoke test_params
 
 .PHONY: test clean patched
 patched:
@@ -18,6 +18,9 @@ test: patched $(addprefix $(BIN)/,$(TESTS))
 
 $(BIN)/test_lib_smoke: test_lib_smoke.cpp | $(BIN)
 	$(CXX) $(CXXFLAGS) $(INC) $< -o $@
+
+$(BIN)/test_params: test_params.cpp $(ROOT)/src/dsp/capicola_params.cpp | $(BIN)
+	$(CXX) $(CXXFLAGS) $(INC) $^ -o $@
 
 $(BIN):
 	mkdir -p $(BIN)
