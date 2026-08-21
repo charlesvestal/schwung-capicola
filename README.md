@@ -26,3 +26,54 @@ are linked from the upstream README.
 ## Licence
 
 **AGPL-3.0**, matching upstream. See [LICENSE](LICENSE).
+
+## Implementation notes
+
+### Memory
+
+Each instance holds two keyframe rings (one per channel) of 2^18 frames x
+12 bytes = 3.1 MB per channel, 6.3 MB per instance — about 12 seconds of
+audio at the paper's typical keep ratio for musical material. Upstream uses
+2^21 frames (25 MB/channel, 50 MB/instance), sized for a Eurorack module that
+freezes up to ~90 seconds on dedicated SDRAM. Schwung allows up to 12
+concurrent instances (4 chain slots + 8 Master FX positions); at upstream's
+ring size that ceiling would be 600 MB. Move has ~1.28 GB available, so even
+upstream's size would technically fit, but there's no reason to spend it —
+the ring size is a single template parameter.
+
+### Known realtime violation
+
+`create_instance` runs on the SPI audio callback thread — see
+`src/dsp/plugin_api_v1.h` and Schwung's `docs/REALTIME_SAFETY.md` rule 4,
+which requires every plugin entry point (including `create_instance`) to be
+realtime-safe. The ~6.3 MB keyframe-ring allocation in `create_instance` is a
+genuine violation of that contract: it calls into the allocator from a
+SCHED_FIFO 90 thread. This is documented rather than hidden. Mitigating
+factors: it is one-shot, at module load time, on the same thread that already
+`dlopen()`s the plugin (a pre-existing violation of the same kind); it
+matches what the rest of the module fleet does. It is still real, and a
+device under load could in principle glitch on the frame a Capicola instance
+is created. `set_param`, `get_param`, `on_midi` and `render_block` perform no
+allocation, no blocking calls and no filesystem access.
+
+### Differences from upstream
+
+| | Upstream | Here |
+|---|---|---|
+| Sample rate | 48 kHz | 44.1 kHz |
+| Ring | 2^21 keyframes/ch | 2^18 keyframes/ch |
+| Instances | 2 SDRAM globals | per-instance |
+| Panel | Eurorack, 4 pages + CV | Schwung param pages, 4 pages |
+| Mod sources | input env / output env / CV IN | input env / output env |
+| Presets | QSPI slot | Schwung slot autosave + user presets |
+
+Modulation depth and routing are ported in full. Upstream's CV IN source is
+dropped — Move has no such jack, and Schwung's chain LFOs and modulation
+routing already reach these parameters from outside, which is the same
+capability by another route.
+
+### Vendored DSP core
+
+`src/dsp/lib/` is copied byte-identical from upstream and must never be
+edited in place. Any fix goes in `patches/`, applied to a build-tree copy —
+see [VENDOR.md](VENDOR.md) for the mechanics.
