@@ -1,0 +1,19 @@
+{
+  "id": "capicola",
+  "name": "Capicola",
+  "abbrev": "CP",
+  "version": "0.1.0",
+  "description": "Keyframe time stretcher with transient re-anchoring (port of capicola by Heavylight Industries)",
+  "author": "Heavylight Industries (port: charlesvestal)",
+  "license": "AGPL-3.0",
+  "dsp": "capicola.so",
+  "api_version": 2,
+  "capabilities": {
+    "audio_out": true,
+    "audio_in": false,
+    "midi_in": true,
+    "midi_out": false,
+    "chainable": true,
+    "component_type": "audio_fx"
+  }
+}

@@ -127,6 +127,7 @@ int main() {
     check(strstr(buf, "\"root\"") != nullptr, "ui_hierarchy has a root level");
     check(strstr(buf, "\"secondary\"") != nullptr, "ui_hierarchy has a secondary level");
     check(strstr(buf, "\"modulation\"") != nullptr, "ui_hierarchy has a modulation level");
+    check(strstr(buf, "\"mod_source\"") != nullptr, "ui_hierarchy has a mod_source level");
 
     // consumes_line_input must be "0" — this FX takes chain audio, not the
     // line jack; answering 1 would arm the feedback gate wrongly.

@@ -20,6 +20,8 @@ CompileFlags:
     - -std=c++17
     - -I../../build/lib
     - -I../../src/dsp
+    - -I../build/lib
+    - -I../src/dsp
     - -Ibuild/lib
     - -Isrc/dsp
     - -Wno-unused-parameter
