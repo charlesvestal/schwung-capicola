@@ -1,0 +1,147 @@
+{
+  "title": "Capicola",
+  "children": [
+    {
+      "title": "Overview",
+      "lines": [
+        "Live time-stretch",
+        "and pitch-shift.",
+        "",
+        "Input is reduced to",
+        "keyframes (local",
+        "extrema) and replayed",
+        "by a lagging read",
+        "head. Transients snap",
+        "the head back to now",
+        "with a crossfade, so",
+        "tails ring out while",
+        "rhythm stays locked",
+        "to the input.",
+        "",
+        "A MIDI note also",
+        "forces a splice on",
+        "both channels, even",
+        "at the mute setting."
+      ]
+    },
+    {
+      "title": "Main Page",
+      "lines": [
+        "Pitch: +/-12 st,",
+        " +/-0.2 st snaps to 0",
+        "",
+        "Stretch: CCW=live,",
+        " noon ~6x slower,",
+        " CW=freeze",
+        "",
+        "Threshold: transient",
+        " pickiness. A ratio",
+        " over the signal's",
+        " own running level,",
+        " not an absolute one.",
+        " Top of range mutes",
+        " auto-trigger; a MIDI",
+        " note still splices.",
+        "",
+        "Grain: splice leash",
+        " length, in keyframes",
+        "",
+        "Quality: keyframe",
+        " density. CCW=crunchy",
+        " and sparse, CW=max",
+        " fidelity",
+        "",
+        "Feedback: 0 to 1.5.",
+        " Above 1.0 is",
+        " unstable on purpose"
+      ]
+    },
+    {
+      "title": "Secondary Page",
+      "lines": [
+        "Smoothing: envelope",
+        " follower speed",
+        "",
+        "Fade: 10-250 ms.",
+        " This is three things",
+        " at once: wet path",
+        " latency, splice",
+        " crossfade length,",
+        " and fastest splice",
+        " rate. Short=snappy",
+        " and clicky, long=",
+        " smeared and washy.",
+        "",
+        "Drive: waveshaper.",
+        " Applied to keyframes",
+        " before interp, so",
+        " it cannot alias.",
+        " Push it as hard as",
+        " you like.",
+        "",
+        "Character: quake to",
+        " clean to sinc",
+        "",
+        "Mix: dry/wet blend",
+        "",
+        "Fb Tone: feedback",
+        " path tone"
+      ]
+    },
+    {
+      "title": "Mod Depth Page",
+      "lines": [
+        "Six bipolar depths,",
+        "one per Main page",
+        "knob: pitch, stretch,",
+        "threshold, grain,",
+        "quality, feedback.",
+        "",
+        "Center = off.",
+        "",
+        "Applied before each",
+        "param's taper, so",
+        "depth means the same",
+        "thing across the",
+        "whole sweep."
+      ]
+    },
+    {
+      "title": "Mod Source Page",
+      "lines": [
+        "Six selectors, one",
+        "per Main page knob.",
+        "",
+        "Input Env or",
+        "Output Env.",
+        "",
+        "Default is Output",
+        "Env: raising a depth",
+        "alone closes a loop",
+        "through the module's",
+        "own output level.",
+        "This is upstream's",
+        "factory default and",
+        "a big part of the",
+        "character."
+      ]
+    },
+    {
+      "title": "Credit",
+      "lines": [
+        "Port of capicola by",
+        "Heavylight Ind.",
+        "",
+        "Based on their DAFx26",
+        "paper, Keyframe Time",
+        "Stretching via",
+        "Extrema Sampling.",
+        "",
+        "DSP core vendored",
+        "unmodified.",
+        "",
+        "License: AGPL-3.0"
+      ]
+    }
+  ]
+}

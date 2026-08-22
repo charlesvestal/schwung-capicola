@@ -13,7 +13,8 @@
 - Buffer policy: continuous slip, superseded on inspection by upstream's transient re-anchor — "sounds good".
 - Modulation matrix pulled into v0.1: "might as well build it now all at once, huh? page 3?"
 - Name: Capicola, keeping the author's name.
-- Distribution: "i already reached out, so build it privately in parallel" — local only, no catalog entry, no release, no tag.
+- Distribution: "i already reached out, so build it privately in parallel" — local only during the build.
+- **Author approved 2026-08-22.** Distribution is unblocked; the remaining gate is hardware verification (Task 8), not permission.
 
 ---
 
@@ -67,7 +68,9 @@ Schwung checkout is at `../schwung`. Tasks 5 and 6 reference it; export `SCHWUNG
 - [ ] `LICENSE` is AGPL-3.0
 - [ ] `README.md` credits Heavylight Industries, the paper, and upstream in the first paragraph
 
-**Verify:** `diff -r src/dsp/lib /tmp/capicola-upstream/lib && echo IDENTICAL` → prints `IDENTICAL`
+**Verify:** `diff -r src/dsp/lib /tmp/capicola-upstream/lib --exclude=alchemy-sdk && echo IDENTICAL` → prints `IDENTICAL`
+
+`--exclude=alchemy-sdk` is required: upstream's `lib/` also contains their Daisy SDK as a git submodule, which we deliberately do not vendor. Without the exclude the check always fails.
 
 **Steps:**
 
@@ -113,7 +116,7 @@ build-tree copy by `scripts/build.sh`. `src/dsp/lib/` itself is never modified.
 
 To check drift:
 
-    diff -r src/dsp/lib /path/to/capicola/lib
+    diff -r src/dsp/lib /path/to/capicola/lib --exclude=alchemy-sdk
 
 ## Patches
 
@@ -261,7 +264,7 @@ head -5 patches/0001-keyframerecorder-sample-rate.patch
 ```bash
 ./scripts/apply_patches.sh
 command grep -n 'detector.Init' build/lib/KeyframeRecorder.h
-diff -r src/dsp/lib /tmp/capicola-upstream/lib && echo "PRISTINE"
+diff -r src/dsp/lib /tmp/capicola-upstream/lib --exclude=alchemy-sdk && echo "PRISTINE"
 ```
 
 Expected: `detector.Init(sample_rate);` in the build copy, and `PRISTINE`.

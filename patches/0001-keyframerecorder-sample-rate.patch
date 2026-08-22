@@ -1,0 +1,30 @@
+# 0001-keyframerecorder-sample-rate.patch
+#
+# Upstream hardcodes detector.Init(48000.0f) inside KeyframeRecorder::Init.
+# Move runs its audio engine at 44100 Hz. Detector::Init(float sample_rate =
+# 48000.0f) already accepts a sample rate, so this only threads it through as
+# an optional parameter on KeyframeRecorder::Init (defaulting to 48000.0f, so
+# any other caller relying on the old signature is unaffected).
+#
+# Applied to a build-tree copy (build/lib) by scripts/apply_patches.sh.
+# src/dsp/lib itself is never modified — see VENDOR.md.
+--- a/KeyframeRecorder.h	2026-08-21 21:47:27
++++ b/KeyframeRecorder.h	2026-08-21 21:47:32
+@@ -142,7 +142,7 @@
+     // SDRAM controller — and bus-fault on the first write. Everything initializes
+     // in Init(), called from AudioEngine::Init() after hw.Init().
+
+-    void Init(const Shapers* sh = nullptr) {
++    void Init(const Shapers* sh = nullptr, float sample_rate = 48000.0f) {
+         shapers   = sh;
+         drive     = 1.0f;
+         character = 0.5f;   // bypass
+@@ -153,7 +153,7 @@
+         liveG = 0;
+         xGain = 1.0f;
+         xStep = 0.0f;
+-        detector.Init(48000.0f);
++        detector.Init(sample_rate);
+         transientCount = 0;
+
+         curPitch     = 1.0f;

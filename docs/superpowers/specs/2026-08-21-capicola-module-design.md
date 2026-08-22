@@ -109,8 +109,20 @@ occurs in `render_block`, `set_param` or `on_midi`.
 
 ## Controls
 
-Twenty-four parameters over three knob pages. Ranges and tapers are lifted from
+Twenty-four parameters over four knob pages. Ranges and tapers are lifted from
 upstream so the feel is the tested one.
+
+The modulation matrix is two pages, not one: `ui_hierarchy` splits `modulation`
+(the six bipolar depths) and `mod_source` (the six source selectors) into
+sibling levels off `root`, rather than nesting the selectors as continuation
+`params[]` entries under one `modulation` level. Schwung's page planner
+(`page_plan.mjs`) appends a level's non-knob `params[]` keys onto extra pages
+after its authored `knobs[]`, and the six `mod_src_*` selectors straddle that
+overflow boundary — two land on the depth page, four get an ugly page of their
+own (`"Modula/Mod Sources"`), for an 8/4 split. Declaring them as their own
+level instead yields four even pages of six, verified by
+`tools/preview_pages.mjs` against Schwung's real planner and validator (0
+findings either way — this is a UX call, not a correctness one).
 
 Where the engineering unit reads well it is exposed directly. Where upstream's
 taper is load-bearing and the raw unit is meaningless on a 128×64 screen, the
@@ -142,20 +154,26 @@ real value — same feel, readable screen.
 Upstream expresses fade in samples (480…12000 @ 48 kHz). We expose **ms**, which
 is both readable and sample-rate independent, converting at the boundary.
 
-### Modulation page
+### Mod Depth page
 
 Upstream's 6×6 matrix: each primary knob gets a bipolar depth and a source
-selector. Twelve params do not fit eight knobs, so the depths take knobs 1–6 and
-the six selectors live as enum rows in the same level's `params` list, divable to
-the enum picker. One page, not two.
+selector. The six depths are knobs 1–6 of the `modulation` level.
 
 | Knob | Key | Type | Range | Default |
 |---|---|---|---|---|
 | 1–6 | `mod_depth_<n>` | float | −1…+1 | 0 (off) |
-| — | `mod_src_<n>` | enum | `Input Env` / `Output Env` | `Output Env` |
 
 `<n>` is the primary key it modulates: `pitch`, `stretch`, `threshold`, `grain`,
 `quality`, `feedback`.
+
+### Mod Source page
+
+The six source selectors get their own sibling level, `mod_source`, one enum
+per knob, divable to the enum picker.
+
+| Knob | Key | Type | Range | Default |
+|---|---|---|---|---|
+| 1–6 | `mod_src_<n>` | enum | `Input Env` / `Output Env` | `Output Env` |
 
 Upstream's third source is the CV IN jack. Move has no such jack and needs none —
 the chain host's LFOs and modulation routing can already target these params from
@@ -240,9 +258,24 @@ network clause is inert for an offline audio module.
 description credit Heavylight Industries, the DAFx26 paper and the upstream repo
 up front, not in a footnote.
 
-**Distribution is local-only for now.** No catalog entry, no release workflow, no
-tag, no `release.json`, pending the author's reply. Build and install scripts
+**The author approved the port on 2026-08-22.** The block on distribution was
+their reply, and it has come.
+
+**The remaining gate is hardware.** Nothing is released until the module has
+been verified on a real Move (Task 8) — a release of something that has never
+made a sound on the target device would be backwards. Until then: no catalog
+entry, no release workflow, no tag, no `release.json`. Build and install scripts
 target `./scripts/install.sh` against the device directly.
+
+What to confirm with the author before publishing, none of which the licence
+decides for us:
+- the exact credit wording, and whether they want to be listed as `author` in
+  `module.json` and the catalog entry (it currently reads
+  `"Heavylight Industries (port: charlesvestal)"`)
+- whether keeping the name **Capicola** for a port of their hardware product is
+  what they intended by approving, or whether they would rather the Schwung
+  build be distinguishable from the Eurorack module
+- whether they want the two-line sample-rate patch offered back upstream
 
 ## Testing
 
