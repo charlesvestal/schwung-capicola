@@ -156,7 +156,7 @@
             },
             {
               "key": "fb_tone",
-              "label": "FB Tone",
+              "label": "Feedback Tone",
               "type": "float",
               "min": 0,
               "max": 1,
