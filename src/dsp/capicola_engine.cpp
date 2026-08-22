@@ -25,7 +25,8 @@ static inline float Clamp01f(float v) { return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0
 
 Engine::Engine()
     : impl(nullptr), mix(1.0f), fbAmt(0.0f),
-      inGate(false), outGate(false), envNormIn(0.0f), envNormOut(0.0f) {
+      inGate(false), outGate(false), envNormIn(0.0f), envNormOut(0.0f),
+      sliceCount(0) {
     for (std::size_t i = 0; i < kMaxBlock; i++) { fbL[i] = 0.0f; fbR[i] = 0.0f; }
 }
 
@@ -195,6 +196,7 @@ void Engine::SetMix(float wet01) { mix = Clamp01f(wet01); }
 
 void Engine::TriggerSlice() {
     if (!impl) return;
+    sliceCount++;
     if (impl->l.GetState() == State::LIVE_EFFECT) {
         impl->l.SubmitRequest(Request::SLICE);
         impl->r.SubmitRequest(Request::SLICE);

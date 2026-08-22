@@ -299,6 +299,15 @@ int GetParam(void* inst, const char* key, char* buf, int len) {
         "}}");
     }
 
+    /* Out-of-band diagnostic: deliberately NOT in chain_params or ui_hierarchy,
+     * so it occupies no cell and does not change the page plan. It exists
+     * because slice firing was otherwise verifiable only by ear - this makes
+     * "did a transient re-anchor happen" answerable over the param channel.
+     * Monotonic; counts kept DETECTOR events, so a forced slice (MIDI note or
+     * the stereo drift guard) does not advance it. */
+    if (!strcmp(key, "transient_count")) return snprintf(buf, (size_t)len, "%u", s->engine.TransientCount());
+    if (!strcmp(key, "slice_count"))     return snprintf(buf, (size_t)len, "%u", s->engine.SliceCount());
+
     if (!strcmp(key, "consumes_line_input")) return snprintf(buf, (size_t)len, "0");
 
     buf[0] = '\0';

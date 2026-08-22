@@ -68,6 +68,12 @@ public:
     bool  OutGate()    const { return outGate; }
     unsigned TransientCount() const;
 
+    /* Forced slices - MIDI notes and manual triggers. Counted separately from
+     * TransientCount(), which only advances on DETECTOR fires: a MIDI-driven
+     * slice bypasses the detector entirely (that is the point of it working at
+     * the mute threshold), so one counter cannot answer both questions. */
+    unsigned SliceCount() const { return sliceCount; }
+
 private:
     struct Impl;
     Impl* impl;          // hides the templated recorders from the header
@@ -86,6 +92,7 @@ private:
     bool  outGate;
     float envNormIn;
     float envNormOut;
+    unsigned sliceCount;
 };
 
 } // namespace capicola_schwung
