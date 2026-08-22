@@ -235,12 +235,12 @@ int GetParam(void* inst, const char* key, char* buf, int len) {
         "{\"key\":\"mod_depth_grain\",\"name\":\"Grain Depth\",\"type\":\"float\",\"min\":-1,\"max\":1,\"step\":0.01,\"default\":0},"
         "{\"key\":\"mod_depth_quality\",\"name\":\"Qual Depth\",\"type\":\"float\",\"min\":-1,\"max\":1,\"step\":0.01,\"default\":0},"
         "{\"key\":\"mod_depth_feedback\",\"name\":\"Fdbk Depth\",\"type\":\"float\",\"min\":-1,\"max\":1,\"step\":0.01,\"default\":0},"
-        "{\"key\":\"mod_src_pitch\",\"name\":\"Pitch Src\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
-        "{\"key\":\"mod_src_stretch\",\"name\":\"Stretch Src\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
-        "{\"key\":\"mod_src_threshold\",\"name\":\"Thresh Src\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
-        "{\"key\":\"mod_src_grain\",\"name\":\"Grain Src\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
-        "{\"key\":\"mod_src_quality\",\"name\":\"Qual Src\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
-        "{\"key\":\"mod_src_feedback\",\"name\":\"Fdbk Src\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1}"
+        "{\"key\":\"mod_src_pitch\",\"name\":\"Pitch\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
+        "{\"key\":\"mod_src_stretch\",\"name\":\"Stretch\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
+        "{\"key\":\"mod_src_threshold\",\"name\":\"Threshold\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
+        "{\"key\":\"mod_src_grain\",\"name\":\"Grain\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
+        "{\"key\":\"mod_src_quality\",\"name\":\"Quality\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1},"
+        "{\"key\":\"mod_src_feedback\",\"name\":\"Feedback\",\"type\":\"enum\",\"options\":[\"Input Env\",\"Output Env\"],\"default\":1}"
         "]");
     }
 
@@ -285,12 +285,12 @@ int GetParam(void* inst, const char* key, char* buf, int len) {
           "\"knobs\":[\"mod_src_pitch\",\"mod_src_stretch\",\"mod_src_threshold\","
                     "\"mod_src_grain\",\"mod_src_quality\",\"mod_src_feedback\"],"
           "\"params\":["
-            "{\"key\":\"mod_src_pitch\",\"label\":\"Pitch Src\"},"
-            "{\"key\":\"mod_src_stretch\",\"label\":\"Stretch Src\"},"
-            "{\"key\":\"mod_src_threshold\",\"label\":\"Thresh Src\"},"
-            "{\"key\":\"mod_src_grain\",\"label\":\"Grain Src\"},"
-            "{\"key\":\"mod_src_quality\",\"label\":\"Qual Src\"},"
-            "{\"key\":\"mod_src_feedback\",\"label\":\"Fdbk Src\"}"
+            "{\"key\":\"mod_src_pitch\",\"label\":\"Pitch\"},"
+            "{\"key\":\"mod_src_stretch\",\"label\":\"Stretch\"},"
+            "{\"key\":\"mod_src_threshold\",\"label\":\"Threshold\"},"
+            "{\"key\":\"mod_src_grain\",\"label\":\"Grain\"},"
+            "{\"key\":\"mod_src_quality\",\"label\":\"Quality\"},"
+            "{\"key\":\"mod_src_feedback\",\"label\":\"Feedback\"}"
           "]}"
         "}}");
     }

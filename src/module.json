@@ -20,53 +20,289 @@
       "levels": {
         "root": {
           "label": "Capicola",
-          "knobs": ["pitch", "stretch", "threshold", "grain", "quality", "feedback"],
+          "knobs": [
+            "pitch",
+            "stretch",
+            "threshold",
+            "grain",
+            "quality",
+            "feedback"
+          ],
           "params": [
-            { "key": "pitch", "label": "Pitch", "type": "float", "min": -12, "max": 12, "step": 1, "default": 0, "unit": "st" },
-            { "key": "stretch", "label": "Stretch", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 0 },
-            { "key": "threshold", "label": "Threshold", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 0.5 },
-            { "key": "grain", "label": "Grain", "type": "int", "min": 32, "max": 4096, "default": 128 },
-            { "key": "quality", "label": "Quality", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 1 },
-            { "key": "feedback", "label": "Feedback", "type": "float", "min": 0, "max": 1.5, "step": 0.01, "default": 0 },
-            { "level": "secondary", "label": "Secondary" },
-            { "level": "modulation", "label": "Mod Depth" },
-            { "level": "mod_source", "label": "Mod Source" }
+            {
+              "key": "pitch",
+              "label": "Pitch",
+              "type": "float",
+              "min": -12,
+              "max": 12,
+              "step": 1,
+              "default": 0,
+              "unit": "st"
+            },
+            {
+              "key": "stretch",
+              "label": "Stretch",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "key": "threshold",
+              "label": "Threshold",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 0.5
+            },
+            {
+              "key": "grain",
+              "label": "Grain",
+              "type": "int",
+              "min": 32,
+              "max": 4096,
+              "default": 128
+            },
+            {
+              "key": "quality",
+              "label": "Quality",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 1
+            },
+            {
+              "key": "feedback",
+              "label": "Feedback",
+              "type": "float",
+              "min": 0,
+              "max": 1.5,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "level": "secondary",
+              "label": "Secondary"
+            },
+            {
+              "level": "modulation",
+              "label": "Mod Depth"
+            },
+            {
+              "level": "mod_source",
+              "label": "Mod Source"
+            }
           ]
         },
         "secondary": {
           "label": "Secondary",
-          "knobs": ["smoothing", "fade_ms", "drive", "character", "mix", "fb_tone"],
+          "knobs": [
+            "smoothing",
+            "fade_ms",
+            "drive",
+            "character",
+            "mix",
+            "fb_tone"
+          ],
           "params": [
-            { "key": "smoothing", "label": "Smoothing", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 0.4259 },
-            { "key": "fade_ms", "label": "Fade", "type": "float", "min": 10, "max": 250, "step": 1, "default": 20, "unit": "ms" },
-            { "key": "drive", "label": "Drive", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 0.1429 },
-            { "key": "character", "label": "Character", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 1 },
-            { "key": "mix", "label": "Mix", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 1 },
-            { "key": "fb_tone", "label": "FB Tone", "type": "float", "min": 0, "max": 1, "step": 0.01, "default": 0.3769 }
+            {
+              "key": "smoothing",
+              "label": "Smoothing",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 0.4259
+            },
+            {
+              "key": "fade_ms",
+              "label": "Fade",
+              "type": "float",
+              "min": 10,
+              "max": 250,
+              "step": 1,
+              "default": 20,
+              "unit": "ms"
+            },
+            {
+              "key": "drive",
+              "label": "Drive",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 0.1429
+            },
+            {
+              "key": "character",
+              "label": "Character",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 1
+            },
+            {
+              "key": "mix",
+              "label": "Mix",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 1
+            },
+            {
+              "key": "fb_tone",
+              "label": "FB Tone",
+              "type": "float",
+              "min": 0,
+              "max": 1,
+              "step": 0.01,
+              "default": 0.3769
+            }
           ]
         },
         "modulation": {
           "label": "Mod Depth",
-          "knobs": ["mod_depth_pitch", "mod_depth_stretch", "mod_depth_threshold", "mod_depth_grain", "mod_depth_quality", "mod_depth_feedback"],
+          "knobs": [
+            "mod_depth_pitch",
+            "mod_depth_stretch",
+            "mod_depth_threshold",
+            "mod_depth_grain",
+            "mod_depth_quality",
+            "mod_depth_feedback"
+          ],
           "params": [
-            { "key": "mod_depth_pitch", "label": "Pitch Depth", "type": "float", "min": -1, "max": 1, "step": 0.01, "default": 0 },
-            { "key": "mod_depth_stretch", "label": "Stretch Depth", "type": "float", "min": -1, "max": 1, "step": 0.01, "default": 0 },
-            { "key": "mod_depth_threshold", "label": "Thresh Depth", "type": "float", "min": -1, "max": 1, "step": 0.01, "default": 0 },
-            { "key": "mod_depth_grain", "label": "Grain Depth", "type": "float", "min": -1, "max": 1, "step": 0.01, "default": 0 },
-            { "key": "mod_depth_quality", "label": "Qual Depth", "type": "float", "min": -1, "max": 1, "step": 0.01, "default": 0 },
-            { "key": "mod_depth_feedback", "label": "Fdbk Depth", "type": "float", "min": -1, "max": 1, "step": 0.01, "default": 0 }
+            {
+              "key": "mod_depth_pitch",
+              "label": "Pitch Depth",
+              "type": "float",
+              "min": -1,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "key": "mod_depth_stretch",
+              "label": "Stretch Depth",
+              "type": "float",
+              "min": -1,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "key": "mod_depth_threshold",
+              "label": "Thresh Depth",
+              "type": "float",
+              "min": -1,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "key": "mod_depth_grain",
+              "label": "Grain Depth",
+              "type": "float",
+              "min": -1,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "key": "mod_depth_quality",
+              "label": "Qual Depth",
+              "type": "float",
+              "min": -1,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            },
+            {
+              "key": "mod_depth_feedback",
+              "label": "Fdbk Depth",
+              "type": "float",
+              "min": -1,
+              "max": 1,
+              "step": 0.01,
+              "default": 0
+            }
           ]
         },
         "mod_source": {
           "label": "Mod Source",
-          "knobs": ["mod_src_pitch", "mod_src_stretch", "mod_src_threshold", "mod_src_grain", "mod_src_quality", "mod_src_feedback"],
+          "knobs": [
+            "mod_src_pitch",
+            "mod_src_stretch",
+            "mod_src_threshold",
+            "mod_src_grain",
+            "mod_src_quality",
+            "mod_src_feedback"
+          ],
           "params": [
-            { "key": "mod_src_pitch", "label": "Pitch Src", "type": "enum", "options": ["Input Env", "Output Env"], "default": 1 },
-            { "key": "mod_src_stretch", "label": "Stretch Src", "type": "enum", "options": ["Input Env", "Output Env"], "default": 1 },
-            { "key": "mod_src_threshold", "label": "Thresh Src", "type": "enum", "options": ["Input Env", "Output Env"], "default": 1 },
-            { "key": "mod_src_grain", "label": "Grain Src", "type": "enum", "options": ["Input Env", "Output Env"], "default": 1 },
-            { "key": "mod_src_quality", "label": "Qual Src", "type": "enum", "options": ["Input Env", "Output Env"], "default": 1 },
-            { "key": "mod_src_feedback", "label": "Fdbk Src", "type": "enum", "options": ["Input Env", "Output Env"], "default": 1 }
+            {
+              "key": "mod_src_pitch",
+              "label": "Pitch",
+              "type": "enum",
+              "options": [
+                "Input Env",
+                "Output Env"
+              ],
+              "default": 1
+            },
+            {
+              "key": "mod_src_stretch",
+              "label": "Stretch",
+              "type": "enum",
+              "options": [
+                "Input Env",
+                "Output Env"
+              ],
+              "default": 1
+            },
+            {
+              "key": "mod_src_threshold",
+              "label": "Threshold",
+              "type": "enum",
+              "options": [
+                "Input Env",
+                "Output Env"
+              ],
+              "default": 1
+            },
+            {
+              "key": "mod_src_grain",
+              "label": "Grain",
+              "type": "enum",
+              "options": [
+                "Input Env",
+                "Output Env"
+              ],
+              "default": 1
+            },
+            {
+              "key": "mod_src_quality",
+              "label": "Quality",
+              "type": "enum",
+              "options": [
+                "Input Env",
+                "Output Env"
+              ],
+              "default": 1
+            },
+            {
+              "key": "mod_src_feedback",
+              "label": "Feedback",
+              "type": "enum",
+              "options": [
+                "Input Env",
+                "Output Env"
+              ],
+              "default": 1
+            }
           ]
         }
       }
