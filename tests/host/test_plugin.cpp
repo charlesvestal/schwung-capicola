@@ -1,11 +1,13 @@
 #include "plugin_api_v1.h"
+#include "audio_fx_api_v2.h"
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
 #include <cmath>
+#include <dlfcn.h>
 
-extern "C" plugin_api_v2_t* move_plugin_init_v2(const host_api_v1_t*);
+extern "C" audio_fx_api_v2_t* move_audio_fx_init_v2(const host_api_v1_t*);
 extern "C" void move_audio_fx_on_midi(void*, const uint8_t*, int, int);
 
 static int failures = 0;
@@ -25,10 +27,23 @@ static const char* kKeys[] = {
 static const int kKeyCount = (int)(sizeof(kKeys) / sizeof(kKeys[0]));
 
 int main() {
-    plugin_api_v2_t* api = move_plugin_init_v2(nullptr);
-    check(api != nullptr, "move_plugin_init_v2 returns an api");
+    // The chain host discovers audio FX purely by dlsym'd symbol name
+    // (AUDIO_FX_INIT_V2_SYMBOL = "move_audio_fx_init_v2", chain_host.c:271).
+    // The original port shipped the SYNTH entry point (move_plugin_init_v2)
+    // instead, which the chain host never looks up — the dlsym failed
+    // silently and the module refused to load on hardware. Pin both halves
+    // of the fix: the correct symbol exists, and the stale synth symbol does
+    // NOT — a leftover export would resurrect the exact ambiguity that hid
+    // the original bug.
+    check(dlsym(RTLD_DEFAULT, "move_audio_fx_init_v2") != nullptr,
+          "move_audio_fx_init_v2 is exported (the audio FX entry point the chain host dlsym's)");
+    check(dlsym(RTLD_DEFAULT, "move_plugin_init_v2") == nullptr,
+          "move_plugin_init_v2 is NOT exported (the synth entry point; its presence hid the load failure)");
+
+    audio_fx_api_v2_t* api = move_audio_fx_init_v2(nullptr);
+    check(api != nullptr, "move_audio_fx_init_v2 returns an api");
     if (!api) return 1;
-    check(api->api_version == 2, "api_version == 2");
+    check(api->api_version == AUDIO_FX_API_VERSION_2, "api_version == AUDIO_FX_API_VERSION_2");
 
     void* inst = api->create_instance(".", nullptr);
     check(inst != nullptr, "create_instance succeeds");
@@ -162,23 +177,23 @@ int main() {
     // Render produces finite audio.
     int16_t block[256];
     for (int i = 0; i < 256; i++) block[i] = (int16_t)((i % 64) * 300 - 9600);
-    api->render_block(inst, block, 128);
+    api->process_block(inst, block, 128);
     bool sane = true;
     for (int i = 0; i < 256; i++) if (block[i] == INT16_MIN) sane = false;
-    check(sane, "render_block produces sane int16");
+    check(sane, "process_block produces sane int16");
 
     // A note-on is a slice trigger and must not crash, even under a
     // threshold set high enough to mute auto-detection.
     api->set_param(inst, "threshold", "1.0");
     const uint8_t note_on[3] = { 0x90, 60, 100 };
     move_audio_fx_on_midi(inst, note_on, 3, 0);
-    api->render_block(inst, block, 128);
+    api->process_block(inst, block, 128);
     check(true, "note-on slice trigger survives a render under mute threshold");
 
     api->destroy_instance(inst);
 
     // NOTE on the "post-taper modulation regression" test requested by the
-    // task brief: the public plugin_api_v2 surface has no getter that
+    // task brief: the public audio_fx_api_v2 surface has no getter that
     // exposes the engine-applied (post-curve) engineering value — get_param
     // for a primary key returns the stored pre-modulation norm
     // (s->primary[p]), never the modulated-then-tapered value PushAll()

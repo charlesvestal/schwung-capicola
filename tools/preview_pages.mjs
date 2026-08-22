@@ -16,7 +16,7 @@
 // having printed why.
 
 import { execFileSync } from "node:child_process";
-import { existsSync, mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -168,9 +168,80 @@ if (!missingFromChainParams.length && !missingFromHierarchy.length) {
     console.log("  match");
 }
 
+/* ------------------------------------- module.json inline-metadata cross-check
+ *
+ * module.json's capabilities.ui_hierarchy carries its OWN inline copy of
+ * type/min/max/default/step/unit/options for every editable param (the file
+ * the shadow UI reads at load time — see chain_host.c:parse_chain_params).
+ * The DSP's get_param("chain_params") is the other, authoritative view of the
+ * same contract. Two views of one contract drift silently unless something
+ * diffs them on every run — that is this block.
+ */
+
+const moduleJsonPath = path.join(REPO_ROOT, "src", "module.json");
+const moduleJson = JSON.parse(readFileSync(moduleJsonPath, "utf8"));
+const fileHierarchy = moduleJson?.capabilities?.ui_hierarchy || null;
+
+const metaFields = ["type", "min", "max", "default", "step", "unit", "options"];
+
+function collectInlineParamMeta(h) {
+    const meta = new Map();
+    const levels = (h && h.levels) || {};
+    for (const lvl of Object.values(levels)) {
+        if (!lvl || typeof lvl !== "object") continue;
+        for (const p of (lvl.params || [])) {
+            if (!p || typeof p !== "object" || p.level || !p.key) continue;
+            meta.set(p.key, p);
+        }
+    }
+    return meta;
+}
+
+const fileParamMeta = collectInlineParamMeta(fileHierarchy);
+const chainParamMeta = new Map(chainParams.map((p) => [p.key, p]));
+
+const metaMismatches = [];
+if (!fileHierarchy) {
+    metaMismatches.push("module.json has no capabilities.ui_hierarchy");
+} else {
+    for (const [key, dspMeta] of chainParamMeta) {
+        const fileMeta = fileParamMeta.get(key);
+        if (!fileMeta) {
+            metaMismatches.push(`${key}: declared in chain_params but missing from module.json ui_hierarchy`);
+            continue;
+        }
+        for (const field of metaFields) {
+            const a = fileMeta[field];
+            const b = dspMeta[field];
+            if (a === undefined && b === undefined) continue;
+            const same = Array.isArray(a) || Array.isArray(b)
+                ? JSON.stringify(a) === JSON.stringify(b)
+                : a === b;
+            if (!same) {
+                metaMismatches.push(`${key}.${field}: module.json=${JSON.stringify(a)} chain_params=${JSON.stringify(b)}`);
+            }
+        }
+    }
+    for (const key of fileParamMeta.keys()) {
+        if (!chainParamMeta.has(key)) {
+            metaMismatches.push(`${key}: declared in module.json ui_hierarchy but missing from chain_params`);
+        }
+    }
+}
+
+console.log("\n--- module.json <-> chain_params metadata cross-check ---");
+if (metaMismatches.length === 0) {
+    console.log("  match");
+} else {
+    for (const m of metaMismatches) console.log(`  MISMATCH: ${m}`);
+}
+
 /* -------------------------------------------------------------- verdict */
 
 const problems = [];
+if (metaMismatches.length > 0) {
+    problems.push(`${metaMismatches.length} module.json/chain_params metadata mismatch(es)`);
+}
 if (knobPages.length !== 4) {
     problems.push(`expected 4 knob pages, got ${knobPages.length}`);
 }

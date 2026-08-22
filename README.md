@@ -44,17 +44,35 @@ the ring size is a single template parameter.
 ### Known realtime violation
 
 `create_instance` runs on the SPI audio callback thread — see
-`src/dsp/plugin_api_v1.h` and Schwung's `docs/REALTIME_SAFETY.md` rule 4,
-which requires every plugin entry point (including `create_instance`) to be
-realtime-safe. The ~6.3 MB keyframe-ring allocation in `create_instance` is a
-genuine violation of that contract: it calls into the allocator from a
-SCHED_FIFO 90 thread. This is documented rather than hidden. Mitigating
-factors: it is one-shot, at module load time, on the same thread that already
-`dlopen()`s the plugin (a pre-existing violation of the same kind); it
-matches what the rest of the module fleet does. It is still real, and a
-device under load could in principle glitch on the frame a Capicola instance
-is created. `set_param`, `get_param`, `on_midi` and `render_block` perform no
-allocation, no blocking calls and no filesystem access.
+`src/dsp/audio_fx_api_v2.h` / `src/dsp/plugin_api_v1.h` and Schwung's
+`docs/REALTIME_SAFETY.md` rule 4, which requires every plugin entry point
+(including `create_instance`) to be realtime-safe. The ~6.3 MB keyframe-ring
+allocation in `create_instance` is a genuine violation of that contract: it
+calls into the allocator from a SCHED_FIFO 90 thread. This is documented
+rather than hidden. Mitigating factors: it is one-shot, at module load time,
+on the same thread that already `dlopen()`s the plugin (a pre-existing
+violation of the same kind); it matches what the rest of the module fleet
+does. It is still real, and a device under load could in principle glitch on
+the frame a Capicola instance is created. `set_param`, `get_param`, `on_midi`
+and `process_block` perform no allocation, no blocking calls and no
+filesystem access.
+
+Measured on hardware, `create_instance` originally took **14.3 ms** against
+the SPI callback's ~900 µs budget — `Engine::Init()` allocated `Impl`
+value-initialized (`new (std::nothrow) Impl()`), which zero-fills the whole
+6.3 MB block, immediately followed by `KeyframeRecorder::Init` overwriting
+every byte of it again (`sparse.Init()` → `Clear()` →
+`buffer.fill(Keyframe{0.0f, 1.0f})`, plus every scalar control field set
+explicitly). Switching to default-initialization (`new (std::nothrow) Impl`,
+no parens) removes that redundant zero-fill pass; `KeyframeRecorder` was
+already made trivially constructible upstream for exactly this reason (see
+its header comment). This does not eliminate the violation — the ring
+allocation itself still happens on the SPI thread — it removes a pass of
+work that was strictly wasted. On this dev machine, single-shot
+`create_instance` calls (which is what actually happens once per module
+load, unlike a warm-allocator loop) dropped from a ~1.2–1.9 ms range to a
+~0.77–1.0 ms range; the ARM device's 14.3 ms baseline is expected to shrink
+by a similar proportion, not to disappear.
 
 ### Differences from upstream
 

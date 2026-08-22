@@ -36,7 +36,14 @@ bool Engine::Init() {
     // callback — see plugin_api_v1.h). It is a one-shot allocation at module
     // load, on the same thread that already dlopen()s us, and it is documented
     // in README.md rather than hidden. Nothing else here allocates.
-    impl = new (std::nothrow) Impl();
+    //
+    // Default-initialize (no parens): value-initializing `Impl()` zero-fills
+    // the whole 6.3 MB block, which KeyframeRecorder::Init immediately
+    // overwrites member-by-member (sparse.Init() -> Clear() ->
+    // buffer.fill(...), plus every scalar control field set explicitly below)
+    // — the zero-fill upstream deliberately made unnecessary by keeping
+    // KeyframeRecorder trivially constructible (see its header comment).
+    impl = new (std::nothrow) Impl;
     if (!impl) return false;
 
     shapers.Init();

@@ -1,11 +1,12 @@
-// Schwung plugin_api_v2 wrapper for the capicola engine.
+// Schwung audio_fx_api_v2 wrapper for the capicola engine.
 //
 // REALTIME CONTRACT: every entry point here runs on the SPI callback. The only
 // allocation is the one-shot engine ring in create_instance (documented in
-// README.md). set_param, get_param, on_midi and render_block do not allocate,
+// README.md). set_param, get_param, on_midi and process_block do not allocate,
 // block, or touch the filesystem.
 
 #include "plugin_api_v1.h"
+#include "audio_fx_api_v2.h"
 #include "capicola_engine.h"
 #include "capicola_params.h"
 #include <cstdio>
@@ -300,7 +301,7 @@ int GetParam(void* inst, const char* key, char* buf, int len) {
     return 0;
 }
 
-void RenderBlock(void* inst, int16_t* out_lr, int frames) {
+void ProcessBlock(void* inst, int16_t* out_lr, int frames) {
     Instance* s = static_cast<Instance*>(inst);
     if (!s || !out_lr) return;
     if (frames > kBlockMax) frames = kBlockMax;
@@ -338,24 +339,25 @@ void OnMidi(void* inst, const uint8_t* msg, int len, int /*source*/) {
     if ((msg[0] & 0xF0) == 0x90 && msg[2] > 0) s->engine.TriggerSlice();
 }
 
-plugin_api_v2_t g_api;
+audio_fx_api_v2_t g_api;
 
 } // namespace
 
-extern "C" plugin_api_v2_t* move_plugin_init_v2(const host_api_v1_t* /*host*/) {
-    g_api.api_version      = 2;
-    g_api.create_instance   = CreateInstance;
-    g_api.destroy_instance  = DestroyInstance;
-    g_api.on_midi           = nullptr;      // audio FX use the dlsym'd hook below
-    g_api.set_param         = SetParam;
-    g_api.get_param         = GetParam;
-    g_api.get_error         = nullptr;
-    g_api.render_block      = RenderBlock;
+extern "C" audio_fx_api_v2_t* move_audio_fx_init_v2(const host_api_v1_t* /*host*/) {
+    g_api.api_version      = AUDIO_FX_API_VERSION_2;
+    g_api.create_instance  = CreateInstance;
+    g_api.destroy_instance = DestroyInstance;
+    g_api.process_block    = ProcessBlock;
+    g_api.set_param        = SetParam;
+    g_api.get_param        = GetParam;
+    g_api.on_midi           = OnMidi;
     return &g_api;
 }
 
-// Discovered by the chain host via dlsym("move_audio_fx_on_midi") and broadcast
-// to every audio FX — the same path the ducker uses.
+// ALSO discovered by the chain host via dlsym("move_audio_fx_on_midi") and
+// broadcast to every audio FX — the same path the ducker uses. Kept alongside
+// the struct member above; the chain host's FX MIDI broadcast (chain_host.c)
+// looks this symbol up independently of the on_midi function pointer.
 extern "C" void move_audio_fx_on_midi(void* inst, const uint8_t* msg, int len, int source) {
     OnMidi(inst, msg, len, source);
 }

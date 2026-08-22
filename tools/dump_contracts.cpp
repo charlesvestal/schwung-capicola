@@ -12,10 +12,11 @@
 // tools/preview_pages.mjs into build/dump_contracts.
 
 #include "plugin_api_v1.h"
+#include "audio_fx_api_v2.h"
 #include <cstdio>
 #include <cstring>
 
-extern "C" plugin_api_v2_t* move_plugin_init_v2(const host_api_v1_t* host);
+extern "C" audio_fx_api_v2_t* move_audio_fx_init_v2(const host_api_v1_t* host);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -23,9 +24,9 @@ int main(int argc, char** argv) {
         return 2;
     }
 
-    plugin_api_v2_t* api = move_plugin_init_v2(nullptr);
+    audio_fx_api_v2_t* api = move_audio_fx_init_v2(nullptr);
     if (!api || !api->create_instance || !api->get_param) {
-        std::fprintf(stderr, "move_plugin_init_v2 did not return a usable v2 api\n");
+        std::fprintf(stderr, "move_audio_fx_init_v2 did not return a usable v2 api\n");
         return 1;
     }
 

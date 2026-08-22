@@ -28,7 +28,7 @@ $(BIN)/test_engine: test_engine.cpp $(ENGINE_SRC) | $(BIN)
 	$(CXX) $(CXXFLAGS) $(INC) $^ -o $@
 
 $(BIN)/test_plugin: test_plugin.cpp $(ROOT)/src/dsp/capicola_plugin.cpp $(ENGINE_SRC) | $(BIN)
-	$(CXX) $(CXXFLAGS) $(INC) $^ -o $@
+	$(CXX) $(CXXFLAGS) $(INC) $^ -rdynamic -o $@
 
 $(BIN)/wav_runner: wav_runner.cpp $(ENGINE_SRC) | $(BIN)
 	$(CXX) $(CXXFLAGS) $(INC) $^ -o $@
