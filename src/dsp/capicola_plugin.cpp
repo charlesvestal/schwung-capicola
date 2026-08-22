@@ -179,7 +179,11 @@ int GetParam(void* inst, const char* key, char* buf, int len) {
     const int p = PrimaryIndex(key);
     if (p >= 0) {
         float out;
-        if      (p == PARAM_PITCH)    out = PitchSemisFromNorm(s->primary[p]);
+        /* Declared int (semitones): report a whole number. Declaring it float
+         * made the host derive the detent from the RANGE and ignore step,
+         * giving 0.12 st per detent under an integer display. */
+        if      (p == PARAM_PITCH)    return snprintf(buf, len, "%.0f", PitchSemisFromNorm(s->primary[p]));
+        else if (false)               out = 0.0f;
         else if (p == PARAM_GRAIN)    out = GrainKeyframesFromNorm(s->primary[p]);
         else if (p == PARAM_FEEDBACK) out = s->primary[p] * 1.5f;
         else                          out = s->primary[p];
@@ -217,7 +221,7 @@ int GetParam(void* inst, const char* key, char* buf, int len) {
         // so this and module.json's inline metadata must agree (Task 5).
         return snprintf(buf, (size_t)len, "%s",
         "["
-        "{\"key\":\"pitch\",\"name\":\"Pitch\",\"type\":\"float\",\"min\":-12,\"max\":12,\"step\":1,\"default\":0,\"unit\":\"st\"},"
+        "{\"key\":\"pitch\",\"name\":\"Pitch\",\"type\":\"int\",\"min\":-12,\"max\":12,\"step\":1,\"default\":0,\"unit\":\"st\"},"
         "{\"key\":\"stretch\",\"name\":\"Stretch\",\"type\":\"float\",\"min\":0,\"max\":1,\"step\":0.01,\"default\":0},"
         "{\"key\":\"threshold\",\"name\":\"Threshold\",\"type\":\"float\",\"min\":0,\"max\":1,\"step\":0.01,\"default\":0.5},"
         "{\"key\":\"grain\",\"name\":\"Grain\",\"type\":\"int\",\"min\":32,\"max\":4096,\"default\":128},"

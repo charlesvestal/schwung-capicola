@@ -32,12 +32,12 @@
             {
               "key": "pitch",
               "label": "Pitch",
-              "type": "float",
+              "type": "int",
               "min": -12,
               "max": 12,
-              "step": 1,
               "default": 0,
-              "unit": "st"
+              "unit": "st",
+              "step": 1
             },
             {
               "key": "stretch",
