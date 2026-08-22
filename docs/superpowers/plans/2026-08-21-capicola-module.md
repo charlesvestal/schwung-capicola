@@ -13,7 +13,8 @@
 - Buffer policy: continuous slip, superseded on inspection by upstream's transient re-anchor — "sounds good".
 - Modulation matrix pulled into v0.1: "might as well build it now all at once, huh? page 3?"
 - Name: Capicola, keeping the author's name.
-- Distribution: "i already reached out, so build it privately in parallel" — local only, no catalog entry, no release, no tag.
+- Distribution: "i already reached out, so build it privately in parallel" — local only during the build.
+- **Author approved 2026-08-22.** Distribution is unblocked; the remaining gate is hardware verification (Task 8), not permission.
 
 ---
 

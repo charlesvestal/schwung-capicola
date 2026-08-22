@@ -258,9 +258,24 @@ network clause is inert for an offline audio module.
 description credit Heavylight Industries, the DAFx26 paper and the upstream repo
 up front, not in a footnote.
 
-**Distribution is local-only for now.** No catalog entry, no release workflow, no
-tag, no `release.json`, pending the author's reply. Build and install scripts
+**The author approved the port on 2026-08-22.** The block on distribution was
+their reply, and it has come.
+
+**The remaining gate is hardware.** Nothing is released until the module has
+been verified on a real Move (Task 8) — a release of something that has never
+made a sound on the target device would be backwards. Until then: no catalog
+entry, no release workflow, no tag, no `release.json`. Build and install scripts
 target `./scripts/install.sh` against the device directly.
+
+What to confirm with the author before publishing, none of which the licence
+decides for us:
+- the exact credit wording, and whether they want to be listed as `author` in
+  `module.json` and the catalog entry (it currently reads
+  `"Heavylight Industries (port: charlesvestal)"`)
+- whether keeping the name **Capicola** for a port of their hardware product is
+  what they intended by approving, or whether they would rather the Schwung
+  build be distinguishable from the Eurorack module
+- whether they want the two-line sample-rate patch offered back upstream
 
 ## Testing
 
