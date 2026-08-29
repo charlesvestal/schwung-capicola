@@ -41,6 +41,7 @@
             },
             {
               "key": "stretch",
+              "short_name": "STRTCH",
               "label": "Stretch",
               "type": "float",
               "min": 0,
@@ -50,6 +51,7 @@
             },
             {
               "key": "threshold",
+              "short_name": "THRSH",
               "label": "Threshold",
               "type": "float",
               "min": 0,
@@ -67,6 +69,7 @@
             },
             {
               "key": "quality",
+              "short_name": "QUAL",
               "label": "Quality",
               "type": "float",
               "min": 0,
@@ -156,6 +159,7 @@
             },
             {
               "key": "fb_tone",
+              "short_name": "Tone",
               "label": "Feedback Tone",
               "type": "float",
               "min": 0,
@@ -178,6 +182,7 @@
           "params": [
             {
               "key": "mod_depth_pitch",
+              "short_name": "Pitch",
               "label": "Pitch Depth",
               "type": "float",
               "min": -1,
@@ -187,6 +192,7 @@
             },
             {
               "key": "mod_depth_stretch",
+              "short_name": "STRCH",
               "label": "Stretch Depth",
               "type": "float",
               "min": -1,
@@ -196,6 +202,7 @@
             },
             {
               "key": "mod_depth_threshold",
+              "short_name": "Threshold",
               "label": "Threshold Depth",
               "type": "float",
               "min": -1,
@@ -205,6 +212,7 @@
             },
             {
               "key": "mod_depth_grain",
+              "short_name": "Grain",
               "label": "Grain Depth",
               "type": "float",
               "min": -1,
@@ -214,6 +222,7 @@
             },
             {
               "key": "mod_depth_quality",
+              "short_name": "Quality",
               "label": "Quality Depth",
               "type": "float",
               "min": -1,
@@ -223,6 +232,7 @@
             },
             {
               "key": "mod_depth_feedback",
+              "short_name": "Feedback",
               "label": "Feedback Depth",
               "type": "float",
               "min": -1,
@@ -255,6 +265,7 @@
             },
             {
               "key": "mod_src_stretch",
+              "short_name": "STRTCH",
               "label": "Stretch",
               "type": "enum",
               "options": [
