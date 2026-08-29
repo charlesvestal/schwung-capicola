@@ -2,7 +2,7 @@
   "id": "capicola",
   "name": "Capicola",
   "abbrev": "CP",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Keyframe time stretcher with transient re-anchoring (port of capicola by Heavylight Industries)",
   "author": "Heavylight Industries (port: charlesvestal)",
   "license": "AGPL-3.0",
